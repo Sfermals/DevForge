@@ -1,0 +1,1 @@
+Q3.6 Prompt user to enter 3 integers, write an application to arrange and display them in ascending order

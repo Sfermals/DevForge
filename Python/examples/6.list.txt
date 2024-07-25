@@ -1,0 +1,7 @@
+car = ['bmw' , 'tesla', 'mercedes', 'toyota']
+print(len(car))
+print(car)
+print(car[0])
+print(car[1])
+print(car[2])
+print(car[3])

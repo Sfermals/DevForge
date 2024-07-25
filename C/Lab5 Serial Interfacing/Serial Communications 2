@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <conio.h>
+
+#define COM2 0x2F8
+
+/* Function prototypes for Inp32( ) and Out32( ) */
+short _stdcall Inp32(short PortAddress);
+void _stdcall Out32(short PortAddress, short data);
+
+
+void main( )
+{
+unsigned char status, ch=0;
+
+Out32(COM2 + 1 , 0); /* Turn off all the interrupts of COM 2 */
+/* COM 2 - Communication Settings */
+
+Out32(COM2 + 3 , 0x80); /* SET DLAB ON */
+
+Out32(COM2 + 0 , 0x01); /* Set Baud rate - Divisor Latch Low Byte */
+
+Out32(COM2 + 1 , 0x00); /* Set Baud rate - Divisor Latch High Byte */
+
+Out32(COM2 + 3 , 0x3); /* 8 Bits, No Parity, 1 Stop Bit */
+
+Out32(COM2 + 2 , 0xC7); /* FIFO Control Register */
+
+printf("\nSample Comm's Program that transmits character. Press ESC key to quit \n");
+
+
+do{
+status = Inp32(COM2 + 5); /* Read from Line Status Register (LSR) */
+if (status & 0x20) /*Check to see if THR is empty?*/
+{
+if (kbhit()){
+ch = _getche(); /* If key pressed, get Char */
+Out32(COM2, ch); /* Send Char to Serial Port */
+}
+}
+} while (ch !=27); /* Quit when ESC (ASCII 27) is pressed */
+}

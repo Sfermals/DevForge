@@ -1,0 +1,24 @@
+#include <windows.h> //for Sleep( )
+#include <conio.h> //for kbhit( )
+
+#define DR 0x3028 //Address of Data Register.
+#define CR 0x302A //Address of Control Register.
+
+/* Function prototypes for Inp32( ) and Out32( ) */
+short _stdcall Inp32(short PortAddress);
+void _stdcall Out32(short PortAddress, short data);
+
+void main()
+{
+ int light;
+
+ Out32(CR, 0x00); //Configure Data Port as output, i.e. C5=0
+ light = 0x55; //1 = LED on, 0 = LED off
+
+ while (!kbhit()) //while no keyboard pressed
+ {
+ Out32(DR, light); //Output to LEDs
+ Sleep(500); //for 500 ms
+ light = ~light; //Invert data bits
+ }
+} 

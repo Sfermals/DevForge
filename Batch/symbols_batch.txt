@@ -1,0 +1,223 @@
+1,@ Command Line Echo Shielder
+2,% Batch Variable Bootstrapper
+3,> redirector
+4,> redirector
+5,<,> &,<&redirectors
+6,| Command Pipeline Character
+7. ^ escape character
+8. & Combination Order
+9, & & Combination Command
+10, | | Combination commands
+11,”” String Definition
+Comma
+13,; semicolon
+14, () brackets
+15,! Exclamation mark
+16. Other special markers that may be seen in batch processing: (omitted)
+CR(0D) command-line Terminator
+Escape (1B) ANSI escape character bootstrapper
+Space (20) commonly used parameter demarcators
+Tab(09); = Uncommonly used parameter demarcator
++ COPY command file connector
+* Document wildcards
+/ Parametric switch bootstrapper
+Batch label bootstrap
+
+Stop talking nonsense and start talking.
+
+1,@ Command Line Echo Shielder
+
+This character in batch processing means to turn off the echo of the current line. We know from the previous lessons
+ECHO OFF can turn off the echo of the whole batch command, but can not turn off the command ECHO OFF. Now we add @ before the command ECHO OFF, we can achieve the requirement that all commands do not echo.
+
+2,% Batch Variable Bootstrapper
+
+This percentage sign is not strictly a command, it is only a parameter in batch processing (except for the use of more than one percent together, which will be described in detail in the future).
+Use% VaR for reference variables,% 1 to% 9 for external parameters of the calling program, and so on.
+% 0% 1%, 2%, 3%, 4%, 5%, 6%, 7%, 8% 9%* is the parameter passed from the command line to the batch processing
+% 0 batch file itself, including complete paths and extensions
+% 1 First parameter
+% Ninth parameter
+%* All parameters starting with the first parameter
+The parameter% 0 has a special function. It can call the batch itself to achieve the purpose of the batch itself cycle, and can also copy the file itself and so on.
+Example: The simplest way to copy the file itself
+copy %0 d:\wind.bat
+Tip: Add in-line comments
+% Annotation content (can be used as in-line annotations, no redirection symbols and pipe symbols can appear)
+Why? At this time, “annotation content” is actually regarded as a variable, its value is empty, so it only plays an annotation role, but this usage is prone to grammatical errors, generally not used.
+
+3,> redirector
+
+Output redirection command
+This character means to pass and override, and its role is to pass the results of the run to a later range (which can be either a file or the default system console).
+In NT series command line, redirection’s scope of action is changed from whole command line to single command statement, which is restricted by command separator &, &, | and statement block.
+For example:
+Use the command: echo Hello > 1.txt to create the file 1.txt with the content “hello” (note that there is a space at the end of the line)
+Use the command: echo Hello > 1. txt to create the file 1. TXT with the content “hello” (note that there is no space at the end of the line)
+
+4,> redirector
+
+Output redirection command
+The function of this symbol is somewhat similar to that of >, but their difference is that > is passed and appended at the end of the document, and > is overwritten.
+Ibid.
+Take 1.txt as an example.
+Use commands:
+
+
+echo hello > 1.txt
+echo world >>1.txt
+At this time, 1.txt is as follows:
+hello
+world
+
+5, <, > &, < & redirectors
+
+These three commands are also pipeline commands, but they are not commonly used. You just need to know about them. Of course, if you want to study them carefully, you can check the information yourself. (I have checked it, and I can’t find the relevant information on the internet.)
+Enter redirection commands and read command input from files rather than from keyboards.
+
+
+@echo off
+echo 2005-05-01>temp.txt
+date <temp.txt
+del temp.txt
+This allows you to modify the current date directly without waiting for input.
+>& Write the output of one handle to the input of another handle.
+< &, just and > & Instead, read input from one handle and write it to the output of another handle.
+Common handles: 0, 1, 2, undefined handles: 3-9
+1 > nul denotes that output of correct information is prohibited
+2 > nul denotes that the output of error messages is prohibited.
+One and two of them are addresses representing the input and output of a data stream (NT CMD is called a handle, MSDOS is called a device).
+Handle 0: Standard input stdin, keyboard input
+Handle 1: Standard output stdout, output to the command prompt window (console, code CON)
+Handle 2: Standard error stderr, output to the command prompt window (console, code CON)
+Stdin can be redirected, stdout can be redirected.
+We already know that you can use the for command to read the text, but it’s a bit cumbersome if you only need to read the first line with the for command. The simple ways are as follows:
+
+
+@echo off
+set /p str=<%0
+echo %str%
+pause
+Run the first line that shows the batch file itself: @echo off
+
+6,| command pipeline character
+
+Format: First command | Second command [| Third command…]
+Use the result of the first command as a parameter to the second command, and remember that this is common in unix.
+For example:
+dir c:\|find “txt”
+The above command is: Find C: all, and find the TXT string.
+Please use FIND /? To view the functions of FIND by yourself.
+This is how I format disk A automatically without automatically formatting parameters for format.
+echo y|format a: /s /q /v:system
+Everyone who has used format knows that you need to enter y to confirm whether or not you have a grid. This command is preceded by echo y and | characters are used to pass the result of echo y to format command.
+In order to achieve the purpose of automatic input y
+(This command is dangerous, please be careful when testing)
+
+7. ^ escape character
+
+^ It is the leading character of special symbols <,>, &. In the command, he removes the special functions of the above three symbols and only treats them as symbols without using their special meanings.
+such as
+
+
+echo test ^>1.txt
+The result is: test > 1. TXT
+He didn’t add it to 1.txt, huh-huh. It just shows up.
+In addition, this escape character can also be used as a continuation symbol.
+For a simple example:
+
+@echo off
+Echo hero^
+Yes.
+Good.
+Man
+pause
+Needless to say, try it on your own and you’ll see.
+Why can an escape character play a continuation role at the end of a line? The reason is simple, because there is an invisible symbol at the end of each line, that is, the carriage return character. When the escape character is at the end of the line, it invalidates the carriage return character, thus playing a continuation role.
+
+8. & Combination Order
+
+Grammar: The first command – the second command [& the third command…]
+& As the name implies, multiple commands can be combined as one command to execute. This is allowed in batch scripts and is widely used. Because batch processing does not recognize the number of commands.
+This symbol allows more than two different commands to be used in a line, and when the first command fails, it does not affect the subsequent command execution.
+Here – the commands on both sides are executed sequentially, from the beginning to the end.
+For example:
+dir z:\ & dir y:\ & dir c:\
+The above command will continuously display the contents of disk z, y and c, regardless of whether the disk exists or not.
+
+9. & & Combination Command
+
+Grammar: The first command & & the second command [& & the third command…]
+In this way, multiple commands can be executed at the same time. When an error occurs, the following commands will not be executed, and if there has been no error, all commands will be executed.
+This command is similar to the one above, but the difference is that when the first command fails, the next command will not be executed.
+dir z:\ && dir y:\ && dir c:\
+
+10, | | Combination Command
+
+Grammar: First command | | Second command [| | Third command…]
+In this way, multiple commands can be executed simultaneously. When one command fails, the second command will be executed. When the correct command is executed, the subsequent command will not be executed. If there is no correct command, all commands will be executed.
+
+Tip: Priority must be paid attention to when combining commands with redirection commands
+Pipeline commands have higher priority than redirection commands, and redirection commands have higher priority than combination commands.
+Question: List the files and folders of C disk and D disk into a. TXT file. Examples:
+dir c:\ && dir d:\ > a.txt
+After this execution, there is only D disk information in a.txt! Why? Because the priority of combination command is not higher than that of redirection command! So this line is divided into two parts when it is executed: dir c: and dir d: a.txt, not the two parts you want: dir c: and & dir d: and > a.txt. To use the combined Command & to meet the requirements of the title, you must write as follows:
+dir c:\ > a.txt && dir d:\ >> a.txt
+In this way, according to the priority level, DOS will divide this sentence into the following two parts: dir c: A. txt and dir d: > a. txt. The differences between the sentences in Example 18 are quite special. It is worth studying and experiencing.
+Of course, you can also use the command here.
+dir c:\ > a.txt & dir d:\ >> a.txt
+[This can also be achieved with dir c:d:>a.txt]
+
+11,”” String Definition
+
+Double quotation marks allow the inclusion of spaces in strings. To enter a special directory, you can use the following methods
+cd “program files”
+cd progra~1
+cd pro*
+All three methods can be entered into the program files directory.
+
+12. comma
+
+A comma corresponds to a space, and in some cases, a “comma” can be used as a space.
+such as
+dir,c:\
+
+13,; semicolon
+
+Semi-colon, when the command is the same, different targets can be used; to isolate, but the execution effect remains unchanged. If an error occurs during execution, only the error report will be returned, but the program will still be executed. (Some people say they won’t continue to do it, but actually test it out.)
+For example:
+dir c:\;d:\;e:\;z:\
+The above command corresponds to
+dir c:\
+dir d:\
+dir e:\
+dir f:\
+If the Z disk does not exist, the run shows that the system can not find the specified path. Then terminate the execution of the command.
+Example: dir c:;d:e:1.txt
+The above command corresponds to
+dir c:\
+dir d:\
+dir e:\1.txt
+The file e:1.txt does not exist, but the e-disk exists, there are error prompts, but the command will still be executed.
+
+Why? If the target path does not exist, execution is terminated; if the path exists, only the file does not exist, execution continues.
+That’s all! If you have any comments, please reply! If you have any questions, please send them to BAT Exchange Zone! The next section improves!
+
+14, () brackets
+
+Parentheses play a special role in batch programming. The left and right parentheses must be used in pairs. The parentheses can include multi-line commands, which will be considered as a whole and a command line.
+Parentheses are common in for and if statements. They are used to nest loops or conditional statements. In fact, parentheses () can also be used separately. See an example.
+Example:
+Command: echo 1 & echo 2 & echo 3
+It can be written as follows:
+(
+echo 1
+echo 2
+echo 3
+)
+The above two styles have the same effect, both of which are considered to be a command line.
+Note: When such multiple commands are considered to be one command line, if there are variables in them, the problem of variable latency is involved.
+
+15,! Exclamation mark
+
+Nothing to say, in the variable delay problem, used to represent variables, that is,% var% should be expressed as! Var!, see the previous SETLOCAL command.

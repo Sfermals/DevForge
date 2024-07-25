@@ -1,0 +1,11 @@
+addition = 10 + 5
+subtraction = 10 - 5
+multiplication = 10 * 5
+division = 10 / 5
+mod = 10 % 4
+
+print(addition)
+print(subtraction)
+print(multiplication)
+print(division)
+print(mod)

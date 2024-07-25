@@ -1,0 +1,22 @@
+#include <stdio.h>
+#define DR 0x3028 //Address of Data Register.
+#define CR 0x302A //Address of Control Register.
+
+a
+/* Function prototypes for Inp32( ) and Out32( ) */
+short _stdcall Inp32(short PortAddress);
+void _stdcall Out32(short PortAddress, short data);
+void main( )
+{
+unsigned char data, mask = 0x00;
+Out32(CR,0x00); //Configure DR as output
+Out32(DR,0x00); //Turn off all LEDs
+while(1)
+{
+printf("\nkey in your mask: 0x"); //Enter a mask to toggle a particular LED
+scanf("%x",&mask);
+data = Inp32(DR);
+data = data^ mask;
+Out32(DR, data); //Toggle individual LED
+}
+}

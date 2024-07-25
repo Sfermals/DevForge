@@ -1,0 +1,3 @@
+monday $78 3hrs
+tuesday $68 2.5hrs
+thursday $120 4hrs

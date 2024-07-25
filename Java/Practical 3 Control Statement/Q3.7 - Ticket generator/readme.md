@@ -1,0 +1,2 @@
+Q3.7 There are ticket generators in CPF building, banks, clinics, etc. On some generators, there are different buttons for different kinds of service. Design a program to simulate bank ticket generator: accept user choice and print out a ticket with its service, queuing No. 
+ e.g. 1 for deposit,  2 for withdraw, 3 for open new account, 4 for other service----use switch.

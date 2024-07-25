@@ -1,0 +1,24 @@
+#include <stdio.h>
+ #include <conio.h>
+ #define SR 0x3029 // Address of Data Register
+
+ /* The two function prototypes below are needed for Inp32() and Out32() */
+ short _stdcall Inp32(short PortAddress);
+ void _stdcall Out32(short PortAddress, short data);
+
+ void main()
+ {
+ unsigned char key;
+ printf("Key is at logic:");
+
+
+ while (!kbhit())                       //Repeat while no keyboard pressed
+ {
+    key = Inp32(SR);                   //Read input from SR
+    key = key & 0x40;                //Read input from only S6
+    if (key == 0x40)                // Display status of input
+        printf("1 (HIGH)\n");
+    else
+        printf("0 (LOW)\n");
+ }
+ } 

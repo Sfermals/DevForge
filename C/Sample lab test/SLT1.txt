@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <windows.h>
+//Constants for Parallel Port LPT1
+#define DR 0x3028
+#define SR 0x3029
+#define CR 0x302A
+//function declarations
+short _stdcall Inp32(short PortAddress);
+void _stdcall Out32(short PortAddress,short data);
+void main()
+{
+    int mydata; // variable to hold LED data
+    unsigned char switchin; // variable to hold switch data
+        // start
+        printf("Program starting ...\n");
+		
+		
+    // initialise system
+        Out32(CR,0x00);
+		
+		
+        //read my data
+        printf("Please enter a hexadecimal value(0..FF) : 0x");
+		scanf("%x", &mydata);
+		
+		
+    //display on LEDs
+        Out32(DR,mydata);
+        // read switches and check for S4
+        switchin = Inp32(SR);
+        switchin = switchin & 0x10;
+		
+		
+    while (switchin) {
+        printf("Switch is OFF\n");
+        switchin = Inp32(SR); //check switches
+        switchin = switchin & 0x10;
+    }
+	
+	
+    // switch is ON
+    // is mydata zero
+    while (mydata | 0x00) {
+        // shift mydata left 1 bit
+        mydata = mydata << 1;
+            // display on LEDs
+        Out32(DR, mydata);
+        Sleep(500);
+    }
+    // finished
+    printf("Completed!\n");
+}
